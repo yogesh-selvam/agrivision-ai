@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { SoilParams, CropRecommendation } from '../types';
 import { 
   Sprout, 
-  Activity, 
   Loader2, 
-  CheckCircle2, 
-  CloudSun,
-  Layers,
-  ChevronRight,
-  Info 
+  Layers, 
+  Leaf,
+  RefreshCw,
+  Award
 } from 'lucide-react';
 
 interface SoilFormProps {
@@ -18,22 +16,38 @@ interface SoilFormProps {
 
 const PRESETS = [
   {
-    name: 'Clay Clay loam soil (Wet Rice Field)',
+    name: 'Clay loam soil (Wet Rice Field)',
     params: { nitrogen: 80, phosphorus: 50, potassium: 40, temperature: 24, humidity: 85, ph: 6.2, rainfall: 220 }
   },
   {
-    name: 'Silt loam upland soil (Dry Corn Field)',
+    name: 'Silt loam soil (Dry Corn Field)',
     params: { nitrogen: 75, phosphorus: 45, potassium: 38, temperature: 26, humidity: 62, ph: 6.5, rainfall: 90 }
   },
   {
-    name: 'Sandy loam dry soil (Arid Pomegranate)',
+    name: 'Sandy loam soil (Arid Pomegranate)',
     params: { nitrogen: 18, phosphorus: 22, potassium: 42, temperature: 32, humidity: 55, ph: 7.2, rainfall: 45 }
   },
   {
-    name: 'Acidic forest loam (High Coffee)',
+    name: 'Acidic forest loam (Coffee Plantation)',
     params: { nitrogen: 100, phosphorus: 28, potassium: 32, temperature: 23, humidity: 58, ph: 6.1, rainfall: 160 }
   }
 ];
+
+// Map predicted target crops to high-quality images & seasons
+const CROP_METRICS: Record<string, { image: string; season: string; yield: string }> = {
+  Rice: { image: 'https://images.unsplash.com/photo-1536640811565-df048bbef6df?w=450&auto=format&fit=crop&q=80', season: 'Kharif / Monsoon', yield: '4.5 Tons/ha' },
+  'Maize (Corn)': { image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=450&auto=format&fit=crop&q=80', season: 'Kharif & Rabi', yield: '4.2 Tons/ha' },
+  Chickpeas: { image: 'https://images.unsplash.com/photo-1515485290382-441e4d049cb5?w=450&auto=format&fit=crop&q=80', season: 'Rabi (Winter)', yield: '1.8 Tons/ha' },
+  'Kidney Beans': { image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=450&auto=format&fit=crop&q=80', season: 'Rabi (Winter)', yield: '1.5 Tons/ha' },
+  'Pigeon Peas': { image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=450&auto=format&fit=crop&q=80', season: 'Kharif', yield: '1.2 Tons/ha' },
+  Pomegranate: { image: 'https://images.unsplash.com/photo-1596003906949-67221c37965c?w=450&auto=format&fit=crop&q=80', season: 'Annual Fruit', yield: '5.0 Tons/ha' },
+  Banana: { image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=450&auto=format&fit=crop&q=80', season: 'Perennial', yield: '12.0 Tons/ha' },
+  Mango: { image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=450&auto=format&fit=crop&q=80', season: 'Summer Fruit', yield: '8.5 Tons/ha' },
+  Grapes: { image: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=450&auto=format&fit=crop&q=80', season: 'Rabi / Spring', yield: '9.0 Tons/ha' },
+  Watermelon: { image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=450&auto=format&fit=crop&q=80', season: 'Summer Crop', yield: '7.5 Tons/ha' },
+  Cotton: { image: 'https://images.unsplash.com/photo-1594191338784-48099df3d274?w=450&auto=format&fit=crop&q=80', season: 'Kharif (Monsoon)', yield: '2.8 Tons/ha' },
+  Coffee: { image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=450&auto=format&fit=crop&q=80', season: 'Perennial Hill', yield: '1.4 Tons/ha' },
+};
 
 export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps) {
   const [formData, setFormData] = useState<SoilParams>({
@@ -50,11 +64,11 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
   const [result, setResult] = useState<CropRecommendation | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  // Synchronized inputs handler
+  const handleValueChange = (name: keyof SoilParams, val: number) => {
     setFormData(prev => ({
       ...prev,
-      [name]: Number(value)
+      [name]: val
     }));
   };
 
@@ -68,7 +82,6 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
     setError(null);
     setResult(null);
 
-    // Dynamic generation matching photo 5 results perfectly
     try {
       const response = await fetch('/api/crop/predict', {
         method: 'POST',
@@ -87,7 +100,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
       setResult(data);
       onRecommendationAdded(data);
     } catch (err: any) {
-      setError(err.message || 'Connecting to server failed.');
+      setError(err.message || 'Connecting to prediction server failed.');
     } finally {
       setLoading(false);
     }
@@ -107,275 +120,363 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
     setError(null);
   };
 
+  // Get matching visual parameters for predicted target
+  const getCropMetrics = (cropName: string) => {
+    return CROP_METRICS[cropName] || {
+      image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=450&auto=format&fit=crop&q=80',
+      season: 'Monsoon Crop',
+      yield: '3.5 Tons/ha'
+    };
+  };
+
   return (
-    <div id="soil-form-parent" className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div className="max-w-6xl mx-auto space-y-6">
       
-      {/* 1. Left input panel - Soil & Env Parameters */}
-      <div className="lg:col-span-5 bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between space-y-6">
-        <div>
-          <div className="flex gap-2.5 items-center mb-1">
-            <Layers className="w-5 h-5 text-brand-600" />
-            <h4 className="text-base font-bold text-slate-800">Soil & Env Parameters</h4>
-          </div>
-          <p className="text-xs text-slate-400 font-medium mb-5 leading-relaxed">
-            Input current soil nutrient levels and weather data for precision crop recommendation.
-          </p>
+      {/* Upper Badge & Titles matching screenshot 5 */}
+      <div className="text-center space-y-2">
+        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
+          XGBoost Powered
+        </div>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
+          Crop Recommendation System
+        </h2>
+        <p className="text-slate-550 text-xs md:text-sm font-semibold max-w-xl mx-auto text-slate-500">
+          Enter your soil parameters and environmental conditions to get AI-powered crop recommendations
+        </p>
+      </div>
 
-          {/* Quick presets row */}
-          <div className="mb-6 space-y-2">
-            <span className="text-[10px] font-mono tracking-wider font-bold text-slate-400 uppercase">Input Presets</span>
-            <div className="grid grid-cols-2 gap-2">
-              {PRESETS.map((p) => (
-                <button
-                  key={p.name}
-                  type="button"
-                  onClick={() => applyPreset(p)}
-                  className="px-3 py-1.5 bg-slate-50 hover:bg-brand-50 text-slate-705 border border-slate-250/30 text-[10px] rounded-lg transition text-left cursor-pointer font-bold truncate"
-                >
-                  {p.name.split(' (')[0]}
-                </button>
-              ))}
-            </div>
+      {/* Main Grid layout */}
+      <div id="soil-analyzer-split" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* LEFT COLUMN: Soil Form Parameters */}
+        <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200/80 shadow-md overflow-hidden">
+          
+          {/* Header Banner */}
+          <div className="bg-[#0d631b] text-white py-4 px-6 flex items-center gap-3">
+            <Layers className="w-5 h-5 text-[#cbffc2]" />
+            <h4 className="font-bold text-sm tracking-wide">Soil & Environmental Parameters</h4>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
             
-            {/* Nutrients Outlined box matching image 5 */}
-            <div className="p-4 border border-slate-205/60 rounded-xl space-y-3 relative">
-              <span className="absolute -top-2.5 left-3 bg-white px-1.5 text-[10px] font-bold text-brand-700 uppercase tracking-wide">
-                🌱 Nutrients (mg/kg)
-              </span>
+            {/* Quick Access Presets bar */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Select Soil Preset</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {PRESETS.map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => applyPreset(p)}
+                    className="truncate text-left px-3 py-2 bg-[#f0f9f4]/60 hover:bg-[#cbffc2]/30 border border-emerald-50 text-[11px] font-bold text-slate-705 rounded-xl transition cursor-pointer"
+                  >
+                    🌱 {p.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Inputs sliders mapping group */}
+            <div className="space-y-4">
               
-              <div className="grid grid-cols-3 gap-3">
-                <div className="relative">
-                  <span className="text-[9px] font-bold text-slate-400 block mb-0.5">N (Nitrogen)</span>
+              {/* Nitrogen (N) */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-750">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                    Nitrogen (N) <span className="text-slate-400 font-medium">(mg/kg)</span>
+                  </span>
                   <input
                     type="number"
-                    name="nitrogen"
+                    min="0"
+                    max="150"
                     value={formData.nitrogen}
-                    onChange={handleInputChange}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
+                    onChange={(e) => handleValueChange('nitrogen', Number(e.target.value))}
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
                   />
                 </div>
-                <div className="relative">
-                  <span className="text-[9px] font-bold text-slate-400 block mb-0.5">P (Phosphorus)</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="150"
+                  value={formData.nitrogen}
+                  onChange={(e) => handleValueChange('nitrogen', Number(e.target.value))}
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                />
+              </div>
+
+              {/* Phosphorus (P) */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-750">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                    Phosphorus (P) <span className="text-slate-400 font-medium">(mg/kg)</span>
+                  </span>
                   <input
                     type="number"
-                    name="phosphorus"
+                    min="0"
+                    max="150"
                     value={formData.phosphorus}
-                    onChange={handleInputChange}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
+                    onChange={(e) => handleValueChange('phosphorus', Number(e.target.value))}
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
                   />
                 </div>
-                <div className="relative">
-                  <span className="text-[9px] font-bold text-slate-400 block mb-0.5">K (Potassium)</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="150"
+                  value={formData.phosphorus}
+                  onChange={(e) => handleValueChange('phosphorus', Number(e.target.value))}
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                />
+              </div>
+
+              {/* Potassium (K) */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs font-semibold text-slate-750">
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                    Potassium (K) <span className="text-slate-400 font-medium">(mg/kg)</span>
+                  </span>
                   <input
                     type="number"
-                    name="potassium"
+                    min="0"
+                    max="150"
                     value={formData.potassium}
-                    onChange={handleInputChange}
-                    className="w-full text-xs p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
+                    onChange={(e) => handleValueChange('potassium', Number(e.target.value))}
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
+                  />
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="150"
+                  value={formData.potassium}
+                  onChange={(e) => handleValueChange('potassium', Number(e.target.value))}
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                />
+              </div>
+
+              {/* Stagger dual items */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Temp */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-500 flex justify-between">
+                    <span>Temperature (°C)</span>
+                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.temperature}°C</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="5"
+                    max="45"
+                    step="0.5"
+                    value={formData.temperature}
+                    onChange={(e) => handleValueChange('temperature', Number(e.target.value))}
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  />
+                </div>
+                {/* Humidity */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-500 flex justify-between">
+                    <span>Humidity (%)</span>
+                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.humidity}%</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={formData.humidity}
+                    onChange={(e) => handleValueChange('humidity', Number(e.target.value))}
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* Soil pH */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-500 flex justify-between">
+                    <span>Soil pH</span>
+                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.ph}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="3.5"
+                    max="9.5"
+                    step="0.1"
+                    value={formData.ph}
+                    onChange={(e) => handleValueChange('ph', Number(e.target.value))}
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  />
+                </div>
+                {/* Rainfall */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-bold text-slate-500 flex justify-between">
+                    <span>Rainfall (mm)</span>
+                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.rainfall}mm</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="20"
+                    max="300"
+                    value={formData.rainfall}
+                    onChange={(e) => handleValueChange('rainfall', Number(e.target.value))}
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  />
+                </div>
+              </div>
+
             </div>
 
-            {/* Environmental Fields pairs */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 block mb-1">Temperature (°C)</span>
-                <input
-                  type="number"
-                  name="temperature"
-                  step="0.1"
-                  value={formData.temperature}
-                  onChange={handleInputChange}
-                  className="w-full text-xs p-2.5 bg-slate-50/50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
-                />
+            {/* Error notifications */}
+            {error && (
+              <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-100 font-semibold">
+                {error}
               </div>
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 block mb-1">Humidity (%)</span>
-                <input
-                  type="number"
-                  name="humidity"
-                  value={formData.humidity}
-                  onChange={handleInputChange}
-                  className="w-full text-xs p-2.5 bg-slate-50/50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
-                />
-              </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 block mb-1">Soil pH</span>
-                <input
-                  type="number"
-                  name="ph"
-                  step="0.1"
-                  value={formData.ph}
-                  onChange={handleInputChange}
-                  className="w-full text-xs p-2.5 bg-slate-50/50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
-                />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 block mb-1">Rainfall (mm)</span>
-                <input
-                  type="number"
-                  name="rainfall"
-                  value={formData.rainfall}
-                  onChange={handleInputChange}
-                  className="w-full text-xs p-2.5 bg-slate-50/50 border border-slate-100 rounded-lg text-slate-800 font-mono focus:border-brand-600 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Buttons Row */}
-            <div className="flex gap-2.5 pt-2">
+            {/* Actions Panel */}
+            <div className="flex gap-3 pt-3">
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-3 border border-brand-600 text-brand-600 hover:bg-slate-50 font-bold text-xs rounded-lg cursor-pointer transition"
+                className="px-4 py-3 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-xl transition duration-150 cursor-pointer flex items-center gap-1.5"
               >
+                <RefreshCw className="w-3.5 h-3.5" />
                 Reset
               </button>
               
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 py-3 bg-brand-650 hover:bg-brand-700 disabled:bg-slate-100 text-white disabled:text-slate-400 font-bold text-xs rounded-lg flex items-center justify-center gap-2 cursor-pointer transition shadow-xs"
+                className="flex-1 py-3 bg-[#0d631b] hover:bg-[#227e31] disabled:bg-slate-150 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition duration-150 cursor-pointer shadow-xs select-none"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Calculating crops...
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    Analyzing Soil...
                   </>
                 ) : (
                   <>
                     <Sprout className="w-4 h-4" />
-                    Predict Crop
+                    Predict Crops
                   </>
                 )}
               </button>
             </div>
+
           </form>
+
         </div>
 
-        {/* Real-time Weather Sync bar */}
-        <div className="p-3.5 bg-orange-50 text-orange-950 border border-orange-200/50 rounded-xl flex items-center gap-2 text-[11px] font-medium animate-fade-in uppercase tracking-wider">
-          <CloudSun className="w-4 h-4 text-orange-700 shrink-0" />
-          <span>Real-time Weather Sync: <strong>Last synced: 2 mins ago for Zone A-12</strong></span>
+        {/* RIGHT COLUMN: Results matching Screenshot 5 */}
+        <div id="soil-output-results" className="lg:col-span-6 bg-white rounded-3xl border border-slate-200/80 shadow-md min-h-[550px] overflow-hidden flex flex-col justify-between">
+          
+          {result ? (
+            <div className="flex-grow flex flex-col justify-between">
+              
+              {/* Header result info banner */}
+              <div className="bg-[#f0f9f4] p-5 border-b border-emerald-100 flex justify-between items-center shrink-0">
+                <div>
+                  <h4 className="font-bold text-slate-800 text-sm font-sans">AI Recommendations</h4>
+                  <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Top predicted matches for your soil profile.</p>
+                </div>
+                <div className="px-3.5 py-1.5 bg-[#0d631b]/10 text-[#0d631b] border border-[#0d631b]/20 text-[10px] font-black font-mono rounded-full uppercase tracking-wider uppercase flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5" /> Accuracy: 98.4%
+                </div>
+              </div>
+
+              {/* Best matched crop representation */}
+              <div className="p-6 space-y-6 flex-1">
+                
+                {/* Hero card matching image elements */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-5 bg-slate-50/50 p-4 rounded-2xl border border-slate-200/50 relative overflow-hidden shadow-2xs">
+                  
+                  {/* Image container */}
+                  <div className="sm:col-span-5 h-28 sm:h-36 rounded-xl overflow-hidden border border-slate-200/70 shrink-0">
+                    <img 
+                      src={getCropMetrics(result.recommendedCrops[0]?.name).image} 
+                      alt={result.recommendedCrops[0]?.name}
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+
+                  {/* Descriptions */}
+                  <div className="sm:col-span-7 flex flex-col justify-between py-0.5 space-y-2">
+                    <div>
+                      <div className="flex justify-between items-center select-none">
+                        <span className="text-[9px] font-mono tracking-widest font-black text-[#0d631b] uppercase bg-[#cbffc2]/55 px-2 py-0.5 rounded-full">Best Match</span>
+                        <span className="text-base font-black font-mono text-[#0d631b]">{result.recommendedCrops[0]?.suitabilityScore}%</span>
+                      </div>
+                      
+                      <h3 className="text-lg font-extrabold text-slate-800 mt-1 leading-tight">{result.recommendedCrops[0]?.name}</h3>
+                      
+                      <div className="flex gap-1.5 mt-1.5 flex-wrap">
+                        <span className="px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200/20 rounded text-[9.5px] font-black uppercase font-mono">{getCropMetrics(result.recommendedCrops[0]?.name).season}</span>
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[9.5px] font-bold font-sans">Yield: {getCropMetrics(result.recommendedCrops[0]?.name).yield}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] leading-relaxed text-slate-500 italic font-medium bg-white p-2.5 rounded-xl border border-slate-100">
+                      Primary evaluation: This soil's structure is optimal for high yields. Set proper fertilization.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sub recommendations Bullet list with professional agronomy values */}
+                <div className="space-y-3.5">
+                  <h5 className="font-extrabold text-xs text-slate-700 uppercase tracking-wider flex items-center gap-1.5 select-none pl-1">
+                    <Leaf className="w-4 h-4 text-[#0d631b]" /> Cultivation Guidelines:
+                  </h5>
+                  <div className="p-4 bg-[#f0f9f4]/45 rounded-2xl border border-emerald-50/50 text-xs text-slate-650 leading-relaxed font-medium space-y-2 prose">
+                    <div className="whitespace-pre-line text-slate-600">
+                      {result.farmingAdvice}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Other matches segment list rendering */}
+                {result.recommendedCrops.length > 1 && (
+                  <div className="space-y-3 pt-2">
+                    <h5 className="font-extrabold text-[#1b1c1c] text-xs uppercase tracking-wider pl-1">Other Suitable Crops:</h5>
+                    <div className="grid grid-cols-2 gap-3">
+                      {result.recommendedCrops.slice(1, 3).map((r, i) => (
+                        <div key={i} className="p-3 bg-white border border-slate-200/70 hover:border-emerald-250 rounded-2xl flex flex-col justify-between gap-2 shadow-2xs">
+                          <div className="flex justify-between items-center">
+                            <span className="font-extrabold text-slate-800 text-xs leading-none truncate pr-2">{r.name}</span>
+                            <span className="font-mono text-xs font-black text-emerald-600 shrink-0">{r.suitabilityScore}%</span>
+                          </div>
+                          <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold shrink-0">
+                            <span>Season: <strong className="text-slate-500 font-extrabold text-[9.5px] uppercase">{getCropMetrics(r.name).season.split(' ')[0]}</strong></span>
+                            <span>Yield: {getCropMetrics(r.name).yield.split(' ')[0]} G</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+              
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-4 border-dashed border-slate-50 rounded-3xl m-3">
+              <div className="w-16 h-16 bg-[#f0f9f4] text-[#0d631b] rounded-full flex items-center justify-center mx-auto shadow-sm relative">
+                <Sprout className="w-8 h-8" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-ping border-2 border-white" />
+              </div>
+              <span className="text-sm font-extrabold text-slate-700 mt-4 font-sans select-none">Awaiting soil parameters...</span>
+              <p className="text-[11px] text-slate-400 font-semibold max-w-sm mt-1.5 leading-relaxed select-none">
+                Select any predefined soil conditions on the left or set your customized NPK metrics and scroll to hit 'Predict Crops'.
+              </p>
+            </div>
+          )}
+
         </div>
 
-        {error && (
-          <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200 font-semibold">
-            {error}
-          </div>
-        )}
       </div>
 
-      {/* 2. Right results panel - AI Recommendations */}
-      <div className="lg:col-span-7 bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-xs flex flex-col justify-between min-h-[500px]">
-        {result ? (
-          <div id="soil-prediction-match" className="space-y-6 w-full">
-            <div className="flex justify-between items-center pb-2 border-b border-rose-50/50">
-              <div>
-                <h4 className="text-base font-extrabold text-slate-800 font-sans">AI Recommendations</h4>
-                <p className="text-xs text-slate-400 font-semibold mt-0.5">Top predicted matches for your soil profile.</p>
-              </div>
-              <span className="px-3 py-1 bg-brand-100 text-brand-700 text-[11px] font-bold font-mono rounded-full uppercase">
-                Accuracy: 98.4%
-              </span>
-            </div>
-
-            {/* Best Match spotlight card with image */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 bg-slate-50/50 p-4 rounded-xl border border-slate-150/40 relative">
-              <div className="md:col-span-4 rounded-xl overflow-hidden h-36 border border-slate-200/50">
-                <img 
-                  src="https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=300&auto=format&fit=crop&q=80" 
-                  alt="Corn Matched"
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              
-              <div className="md:col-span-8 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-mono tracking-widest font-bold text-brand-650 uppercase">Best Match</span>
-                    <span className="text-lg font-bold font-mono text-brand-650">96%</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-800 font-display mt-0.5">{result.recommendedCrops[0]?.name || 'Maize (Corn)'}</h3>
-                  <div className="flex gap-2 mt-1.5 flex-wrap">
-                    <span className="px-2 py-0.5 bg-yellow-50 text-yellow-800 border border-yellow-250/20 rounded text-[10px] font-bold">Monsoon</span>
-                    <span className="px-2 py-0.5 bg-slate-100 text-slate-650 rounded text-[10px] font-bold">4.2 Tons/ha</span>
-                  </div>
-                </div>
-
-                <p className="text-[11.5px] italic text-slate-550 leading-relaxed font-semibold mt-3 p-2 bg-white rounded-lg border border-slate-100 text-slate-600">
-                  "Current pH and Rainfall levels are optimal for high-yield hybrid varieties. Focus on Urea application in Week 3."
-                </p>
-              </div>
-            </div>
-
-            {/* Sub matches underneath as detailed columns */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              
-              {/* Secondary Match 1 */}
-              <div className="p-4 bg-white border border-slate-100 rounded-xl flex flex-col justify-between h-40 shadow-xs">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <h5 className="font-extrabold text-slate-800 font-sans text-sm">{result.recommendedCrops[1]?.name || 'Mung Bean'}</h5>
-                    <span className="font-mono text-xs font-bold text-emerald-600">84%</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1 text-[11px] text-slate-400 mt-2 font-medium">
-                    <span>Season: <strong className="text-slate-650">Summer</strong></span>
-                    <span>Est. Yield: <strong className="text-slate-650">1.5 T/ha</strong></span>
-                  </div>
-                </div>
-                <button className="w-full mt-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-605 text-[10.5px] font-bold rounded-lg transition text-center cursor-pointer border border-slate-100">
-                  View Detailed Guide
-                </button>
-              </div>
-
-              {/* Secondary Match 2 */}
-              <div className="p-4 bg-white border border-slate-100 rounded-xl flex flex-col justify-between h-40 shadow-xs">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <h5 className="font-extrabold text-slate-800 font-sans text-sm">{result.recommendedCrops[2]?.name || 'Cotton'}</h5>
-                    <span className="font-mono text-xs font-bold text-emerald-600">72%</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1 text-[11px] text-slate-400 mt-2 font-medium">
-                    <span>Season: <strong className="text-slate-650">Kharif</strong></span>
-                    <span>Est. Yield: <strong className="text-slate-650">2.8 T/ha</strong></span>
-                  </div>
-                </div>
-                <button className="w-full mt-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-605 text-[10.5px] font-bold rounded-lg transition text-center cursor-pointer border border-slate-100">
-                  View Detailed Guide
-                </button>
-              </div>
-
-            </div>
-          </div>
-        ) : (
-          <div className="h-full min-h-[380px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-100 rounded-2xl">
-            <BackgroundHelperGraphic />
-            <span className="text-sm font-extrabold text-slate-700 font-sans mt-3">Awaiting soil parameters...</span>
-            <p className="text-[11px] text-slate-400 font-medium max-w-sm mt-1.5 leading-relaxed">
-              Activate any crop diagnostic preset on the left or enter precise nutrient readings to trigger the advanced agricultural recommendation algorithm.
-            </p>
-          </div>
-        )}
-      </div>
-
-    </div>
-  );
-}
-
-function BackgroundHelperGraphic() {
-  return (
-    <div className="relative w-16 h-16 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto">
-      <Sprout className="w-8 h-8 text-brand-650" />
-      <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-200 rounded-full animate-ping" />
     </div>
   );
 }

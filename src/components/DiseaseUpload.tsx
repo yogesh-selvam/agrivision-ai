@@ -7,12 +7,10 @@ import {
   Loader2, 
   AlertTriangle, 
   CheckCircle,
-  FileText,
-  Bookmark,
-  Sparkles,
   Award,
   BookOpen,
-  ArrowRight
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 
 interface DiseaseUploadProps {
@@ -21,7 +19,7 @@ interface DiseaseUploadProps {
 }
 
 const BIOLOGY_SAMPLES = [
-  { label: 'Tomato Late Blight', science: 'Phytophthora infestans', description: 'Leathery spots on Potato/Tomato leaves', image: 'https://images.unsplash.com/photo-1592417817098-8f3212041400?w=150&auto=format&fit=crop&q=60' },
+  { label: 'Tomato Late Blight', science: 'Phytophthora infestans', description: 'Leathery spots on Tomato leaves', image: 'https://images.unsplash.com/photo-1592417817098-8f3212041400?w=150&auto=format&fit=crop&q=60' },
   { label: 'Apple Scab', science: 'Venturia inaequalis', description: 'Leathery spots on Apple leaves', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=150&auto=format&fit=crop&q=60' },
   { label: 'Corn Rust', science: 'Puccinia sorghi', description: 'Orange powder pustules on Maize leaves', image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?w=150&auto=format&fit=crop&q=60' },
   { label: 'Rice Blast', science: 'Magnaporthe oryzae', description: 'Spindle neck blight on Rice fields', image: 'https://images.unsplash.com/photo-1536640811565-df048bbef6df?w=150&auto=format&fit=crop&q=60' }
@@ -98,258 +96,236 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
   };
 
   return (
-    <div id="disease-upload-viewport" className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div className="max-w-6xl mx-auto space-y-6">
       
-      {/* Left Input Section - Pathology Upload & Samples */}
-      <div className="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-100 shadow-xs space-y-6">
-        <div>
-          <h4 className="text-base font-bold text-slate-800">Plant Disease Detection</h4>
-          <p className="text-xs text-slate-400 font-medium mt-1 leading-relaxed">
-            Upload a clear photo of your crop's leaves for instant AI analysis.
-          </p>
+      {/* Centered Headers */}
+      <div className="text-center space-y-2">
+        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
+          ResNet-50 Classifier
         </div>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
+          Crop Disease Detection
+        </h2>
+        <p className="text-slate-550 text-xs md:text-sm font-semibold max-w-xl mx-auto text-slate-500">
+          Upload a high-definition photo of crop leaves to instantly identify pathogens, diseases, or leaf stresses
+        </p>
+      </div>
 
-        {/* Quick Samples Section */}
-        <div className="space-y-2">
-          <span className="text-[10px] font-mono tracking-wider font-bold text-slate-400 uppercase">Test Crop Species</span>
-          <div className="grid grid-cols-2 gap-2">
-            {BIOLOGY_SAMPLES.map((s) => (
-              <button
-                key={s.label}
-                onClick={() => selectSample(s)}
-                className="p-1.5 bg-slate-50 border border-slate-100 hover:border-brand-200 rounded-xl flex items-center gap-2 text-left cursor-pointer transition group"
-              >
+      {/* Main interactive split panels alignment */}
+      <div id="disease-scanner-split" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* LEFT COLUMN: Uploader & Samples */}
+        <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-md space-y-6">
+          <div>
+            <span className="text-[10px] font-mono tracking-widest font-black text-[#0d631b] uppercase block">PATHOLOGY SCANNER</span>
+            <h4 className="text-base font-extrabold text-slate-800 mt-0.5">Upload Leaf Diagnostics</h4>
+          </div>
+
+          {/* Test samples grids */}
+          <div className="space-y-2">
+            <label className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider block font-sans">Click to Test with Sample Species:</label>
+            <div className="grid grid-cols-2 gap-2">
+              {BIOLOGY_SAMPLES.map((s, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => selectSample(s)}
+                  className="p-1.5 bg-[#f0f9f4]/45 border border-emerald-50/60 hover:border-emerald-200 rounded-xl flex items-center gap-2 text-left cursor-pointer transition duration-150 group"
+                >
+                  <img 
+                    src={s.image} 
+                    alt={s.label} 
+                    className="w-10 h-10 object-cover rounded-lg border border-slate-100"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h6 className="font-extrabold text-[10.5px] text-slate-800 group-hover:text-[#0d631b] truncate leading-tight">{s.label}</h6>
+                    <p className="text-[9px] text-slate-400 truncate mt-0.5">{s.science}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Picture Uploading core dashed wrapper */}
+          <div className="border-2 border-dashed border-slate-200 bg-slate-50/30 rounded-2xl p-6 text-center">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleInputChange} 
+              accept="image/*" 
+              className="hidden" 
+            />
+
+            {imageBase64 ? (
+              <div className="relative group">
                 <img 
-                  src={s.image} 
-                  alt={s.label} 
-                  className="w-10 h-10 object-cover rounded-lg border border-slate-150/40"
+                  src={imageBase64} 
+                  alt="Pathology Leaf Uploaded" 
+                  className="max-h-56 mx-auto rounded-xl object-cover shadow-sm border border-slate-100" 
                   referrerPolicy="no-referrer"
                 />
-                <div className="min-w-0">
-                  <h6 className="font-bold text-[10.5px] text-slate-800 group-hover:text-brand-700 truncate">{s.label}</h6>
-                  <p className="text-[9px] text-slate-400 truncate">{s.science}</p>
+                <button 
+                  onClick={clearPhoto}
+                  className="absolute top-2 right-2 p-1.5 bg-white text-red-650 hover:bg-red-50 rounded-lg shadow-sm cursor-pointer border border-slate-100"
+                >
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4 py-2">
+                <div className="w-12 h-12 bg-[#f0f9f4] text-[#0d631b] rounded-full flex items-center justify-center mx-auto shadow-2xs">
+                  <Upload className="w-6 h-6 text-[#0d631b]" />
                 </div>
-              </button>
-            ))}
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-slate-700">Drop leaf photo here or click files.</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Fully compatible with standard JPG, PNG formats.</p>
+                </div>
+
+                <div className="flex justify-center gap-2.5">
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 bg-[#0d631b] hover:bg-[#20792e] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition duration-150 cursor-pointer shadow-2xs select-none"
+                  >
+                    <Camera className="w-3.5 h-3.5" /> Camera
+                  </button>
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-2 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-xl flex items-center gap-1.5 transition duration-150 cursor-pointer select-none"
+                  >
+                    Browse Files
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Leaf image uploader card matching photo 7 */}
-        <div className="border-2 border-dashed border-slate-200/80 rounded-2xl p-6 text-center bg-slate-50/20">
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleInputChange} 
-            accept="image/*" 
-            className="hidden" 
-          />
-
-          {imageBase64 ? (
-            <div className="relative group">
-              <img 
-                src={imageBase64} 
-                alt="Uploaded Leaf Pathology" 
-                className="max-h-48 mx-auto rounded-xl object-cover shadow-xs border border-slate-100" 
-                referrerPolicy="no-referrer"
-              />
-              <button 
-                onClick={clearPhoto}
-                className="absolute top-2 right-2 p-1.5 bg-white text-red-650 hover:bg-red-50 rounded-lg shadow-sm cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-xs text-slate-400">
-                <Upload className="w-6 h-6 text-slate-400" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-bold text-slate-700">Drop leaf photo here. Support JPG, PNG files.</p>
-                <p className="text-[10px] text-slate-405 font-medium">Ensure high lighting for better results.</p>
-              </div>
-
-              {/* Dual upload action buttons */}
-              <div className="flex justify-center gap-3">
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 bg-brand-650 hover:bg-brand-700 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  <Camera className="w-3.5 h-3.5" /> Camera
-                </button>
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 border border-brand-650 text-brand-650 hover:bg-brand-50/30 font-bold text-xs rounded-lg flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  Browse
-                </button>
-              </div>
+          {error && (
+            <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200 font-bold">
+              {error}
             </div>
           )}
         </div>
 
-        {error && (
-          <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl border border-red-200">
-            {error}
-          </div>
-        )}
-      </div>
-
-      {/* Right Output Diagnostic layout panel */}
-      <div className="lg:col-span-7 bg-white p-6 sm:p-7 rounded-2xl border border-slate-100 shadow-xs min-h-[500px] flex flex-col justify-between">
-        {loading ? (
-          <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-6">
-            <Loader2 className="w-10 h-10 text-brand-600 animate-spin mb-4" />
-            <span className="text-sm font-bold text-slate-800">Processing Foliar Diagnostics...</span>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm leading-relaxed font-semibold">
-              Applying deep neural network rules on biological lesions via vision models to generate actionable treatment recommendations...
-            </p>
-          </div>
-        ) : result ? (
-          <div id="disease-diagnostic-card shadow-xs" className="space-y-5">
-            
-            {/* Confirmation Tag & scientific header */}
-            <div className="flex justify-between items-start pb-4 border-b border-rose-50/40">
-              <div>
-                <span className="px-2 py-0.5 bg-red-100 text-red-800 text-[9px] font-bold font-mono rounded tracking-wider uppercase">
-                  Detection Confirmed
-                </span>
-                <h3 className="text-lg font-bold text-slate-800 font-display mt-1 tracking-tight">
-                  {result.diseaseName}
-                </h3>
-                <span className="text-xs italic text-slate-400 mt-0.5 block">
-                  Phytophthora infestans (Late Blight Fungus)
+        {/* RIGHT COLUMN: Diagnostic Outcomes Panel */}
+        <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 shadow-md min-h-[500px] overflow-hidden flex flex-col justify-between">
+          
+          {loading ? (
+            <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
+              <Loader2 className="w-10 h-10 text-[#0d631b] animate-spin mb-4" />
+              <span className="text-sm font-bold text-slate-800">Analyzing leaf pathology parameters...</span>
+              <p className="text-xs text-slate-400 mt-1.5 max-w-sm leading-relaxed font-semibold">
+                Running computer vision heuristics and ResNet-50 Residual Blocks classification on lesion shapes to generate diagnostic summary...
+              </p>
+            </div>
+          ) : result ? (
+            <div className="flex-grow flex flex-col justify-between">
+              
+              {/* Header diagnostic results bar */}
+              <div className="bg-[#fcfdfc] p-5 border-b border-rose-50/50 flex justify-between items-center shrink-0">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-red-50 text-red-700 border border-red-100 rounded text-[9px] font-black uppercase tracking-wider font-sans">
+                    Pathogen Found
+                  </div>
+                  <h3 className="text-lg font-black text-slate-800 mt-1 leading-none tracking-tight">
+                    {result.diseaseName}
+                  </h3>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                  Target: {result.cropName}
                 </span>
               </div>
-              <span className="text-[10px] font-mono font-bold text-slate-400 text-right block uppercase">
-                Scan #AI-8821
-              </span>
-            </div>
 
-            {/* Severity and Confidence Metrics column row */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide block">Confidence Metric</span>
-                  <span className="text-xl font-bold font-sans text-brand-650 block mt-1">{result.confidence}% Match</span>
+              {/* Status and Confidence Row */}
+              <div className="p-6 space-y-6 flex-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  
+                  {/* Confidence block */}
+                  <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Match Confidence</span>
+                      <span className="text-xl font-black font-mono text-[#0d631b] block mt-1">{result.confidence}% Match</span>
+                    </div>
+                    <Award className="w-8 h-8 text-[#0d631b] opacity-60 shrink-0" />
+                  </div>
+
+                  {/* Severity block */}
+                  <div className="bg-red-50/10 p-4 rounded-2xl border border-red-100/50 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold text-red-500 uppercase tracking-wider block">Severity Indication</span>
+                      <span className="text-xl font-black font-sans text-red-650 block mt-1">Symptomatic Status</span>
+                    </div>
+                    <AlertTriangle className="w-8 h-8 text-red-500 opacity-60 shrink-0" />
+                  </div>
+
                 </div>
-                <Award className="w-8 h-8 text-brand-600 opacity-60" />
-              </div>
 
-              <div className="bg-red-50/20 p-4 rounded-xl border border-red-100 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-red-800 uppercase tracking-wide block">Severity Level</span>
-                  <span className="text-xl font-bold font-sans text-red-600 block mt-1">High Severity</span>
+                {/* Sub-tabs interactive section matching image styles */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex border-b border-slate-100 pb-0.5 gap-1 shadow-2xs">
+                    {(['symptoms', 'treatment', 'prevention'] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-4 py-2 text-xs font-black capitalize border-b-2 cursor-pointer transition duration-150 ${
+                          activeTab === tab
+                            ? 'border-[#0d631b] text-[#0d631b]'
+                            : 'border-transparent text-slate-400 hover:text-slate-600'
+                        }`}
+                      >
+                        {tab === 'prevention' ? 'Long-term Prevention' : tab}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Active content panel layout */}
+                  <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200/50">
+                    <ul className="space-y-3 text-xs text-slate-700 font-medium">
+                      {(activeTab === 'symptoms' ? result.symptoms : activeTab === 'treatment' ? result.treatments : result.preventionTips).map((item, idx) => (
+                        <li key={idx} className="flex gap-2.5 items-start pl-1">
+                          <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${
+                            activeTab === 'symptoms' ? 'text-red-500' : activeTab === 'treatment' ? 'text-[#0d631b]' : 'text-emerald-600'
+                          }`} />
+                          <span className="text-slate-600 leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <AlertTriangle className="w-8 h-8 text-red-500 opacity-50" />
+
+                {/* Expert Advisory consult section block */}
+                <div className="p-4 bg-[#f0f9f4]/50 border border-emerald-100rounded-2xl rounded-2xl flex gap-4 items-center">
+                  <img 
+                    src="https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=120&auto=format&fit=crop&q=80" 
+                    alt="Dr. Jane Swaminathan" 
+                    className="w-12 h-12 object-cover rounded-full border-2 border-[#cbffc2]"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <span className="text-[9px] font-mono tracking-widest font-black text-[#0d631b] uppercase block">EXPERT RECOMMENDATION APPROVED</span>
+                    <p className="text-[11px] font-semibold text-slate-600 mt-1 leading-relaxed">
+                      Need secondary manual confirmation? Connect instantly with our Senior Pathology Agronomist <strong>Dr. Jane Swaminathan</strong> to run tailored checks.
+                    </p>
+                  </div>
+                </div>
+
               </div>
+              
             </div>
-
-            {/* Dynamic Interactive tabs columns */}
-            <div className="space-y-3">
-              <div className="flex border-b border-slate-100 pb-1">
-                {(['symptoms', 'treatment', 'prevention'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 text-xs font-bold capitalize border-b-2 cursor-pointer transition ${
-                      activeTab === tab
-                        ? 'border-brand-600 text-brand-600'
-                        : 'border-transparent text-slate-400 hover:text-slate-600'
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-4 border-dashed border-slate-50 rounded-3xl m-3">
+              <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                <BookOpen className="w-8 h-8 text-slate-400" />
               </div>
-
-              {/* Active Tab contents with customizable styles */}
-              <div className="p-4 bg-slate-50/50 rounded-xl border border-slate-100">
-                {activeTab === 'symptoms' && (
-                  <ul className="space-y-3 text-xs text-slate-700">
-                    {result.symptoms.map((s, idx) => (
-                      <li key={idx} className="flex gap-2.5 items-start pl-1">
-                        <CheckCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-slate-800 font-bold block">Water-soaked spot lesion</strong>
-                          <span className="text-slate-500 text-[11px] font-medium leading-relaxed">{s}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {activeTab === 'treatment' && (
-                  <ul className="space-y-3 text-xs text-slate-700">
-                    {result.treatments.map((t, idx) => (
-                      <li key={idx} className="flex gap-2.5 items-start pl-1">
-                        <CheckCircle className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-slate-800 font-bold block">Biosecure Spray Application</strong>
-                          <span className="text-slate-500 text-[11px] font-medium leading-relaxed">{t}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                {activeTab === 'prevention' && (
-                  <ul className="space-y-3 text-xs text-slate-700">
-                    {result.preventionTips.map((p, idx) => (
-                      <li key={idx} className="flex gap-2.5 items-start pl-1">
-                        <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <div>
-                          <strong className="text-slate-800 font-bold block font-sans">Crop Canopy Airflow</strong>
-                          <span className="text-slate-500 text-[11px] font-medium leading-relaxed">{p}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              <span className="text-sm font-extrabold text-slate-700 mt-4 font-sans select-none">Awaiting Leaf Diagnostics...</span>
+              <p className="text-[11px] text-slate-400 font-semibold max-w-sm mt-1.5 leading-relaxed select-none">
+                Choose any precompiled leaf pathology sample on the left, or upload high-definition foliage images to trigger automated neural net classification.
+              </p>
             </div>
+          )}
 
-            {/* Action buttons row below */}
-            <div className="flex gap-3 pt-2">
-              <button className="flex-1 py-3 bg-brand-650 hover:bg-brand-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition">
-                <FileText className="w-4 h-4" /> Generate Full Report
-              </button>
-              <button className="px-4 py-3 border border-slate-200 text-slate-650 hover:bg-slate-50 font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition">
-                <Bookmark className="w-4 h-4 text-slate-400" /> Save to History
-              </button>
-            </div>
+        </div>
 
-            {/* Expert opinion consult box matching image 7 */}
-            <div className="p-4 bg-amber-50/20 border border-brand-100 rounded-xl flex gap-3.5 items-center">
-              <img 
-                src="https://images.unsplash.com/photo-1594744803329-e58b31de215f?w=120&auto=format&fit=crop&q=80" 
-                alt="Dr. Sarah Miller" 
-                className="w-12 h-12 object-cover rounded-full border border-brand-200"
-                referrerPolicy="no-referrer"
-              />
-              <div className="min-w-0">
-                <span className="text-[9px] font-mono tracking-wider font-bold text-brand-650 uppercase block">Expert Advisory</span>
-                <p className="text-[11.5px] font-medium text-slate-600 mt-1 leading-relaxed">
-                  Need a second opinion? Consult with <strong>Dr. Sarah Miller</strong>, our senior plant pathologist specializing in blight control.
-                </p>
-                <button className="text-[10px] uppercase font-bold text-brand-650 hover:text-brand-750 hover:underline mt-1.5 flex items-center gap-1 cursor-pointer">
-                  Connect with Expert <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-          </div>
-        ) : (
-          <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-100 rounded-2xl">
-            <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto shadow-xs">
-              <BookOpen className="w-8 h-8 text-slate-400" />
-            </div>
-            <span className="text-sm font-bold text-slate-700 font-sans mt-3">Awaiting foliar sample data...</span>
-            <p className="text-[11px] text-slate-400 font-medium max-w-sm mt-1.5 leading-relaxed">
-              Toggle any sample species on the left, or upload high-definition leaf pictures to initiate advanced automated pathology identification.
-            </p>
-          </div>
-        )}
       </div>
 
     </div>
