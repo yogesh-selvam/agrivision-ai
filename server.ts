@@ -947,7 +947,7 @@ app.get('/api/admin/users', authenticateToken, authorizeRoles('Admin'), (req: an
   res.json(shadowUsers);
 });
 
-app.get('/api/admin/stats', authenticateToken, authorizeRoles('Admin', 'Agriculture Expert'), (req: any, res: any) => {
+app.get('/api/admin/stats', authenticateToken, authorizeRoles('Admin', 'Agriculture Expert', 'Farmer'), (req: any, res: any) => {
   const db = readDB();
   
   // Distribution count of crops diagnosed
