@@ -1,0 +1,23 @@
+# Docker-compose configuration for AGRIBOT platform deployment
+version: '3.8'
+
+services:
+  agribot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agribot_enterprise_service
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - JWT_SECRET=${JWT_SECRET:-agribot-enterprise-super-secret-key-12345}
+    volumes:
+      # Persist the lightweight JSON database state
+      - agribot_db_volume:/app/db.json
+    restart: always
+
+volumes:
+  agribot_db_volume:
+    driver: local

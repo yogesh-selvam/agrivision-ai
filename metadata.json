@@ -1,0 +1,6 @@
+{
+  "name": "AGRIBOT",
+  "description": "An enterprise-level AI-powered agricultural platform featuring crop recommendation, crop disease detection via Gemini Vision, AI advisor chatbot, analytics dashboards, and PDF reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
