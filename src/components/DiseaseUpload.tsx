@@ -100,7 +100,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
       
       {/* Centered Headers */}
       <div className="text-center space-y-2">
-        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
+        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#16a34a] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
           ResNet-50 Classifier
         </div>
         <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
@@ -117,7 +117,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
         {/* LEFT COLUMN: Uploader & Samples */}
         <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-md space-y-6">
           <div>
-            <span className="text-[10px] font-mono tracking-widest font-black text-[#0d631b] uppercase block">PATHOLOGY SCANNER</span>
+            <span className="text-[10px] font-mono tracking-widest font-black text-[#16a34a] uppercase block">PATHOLOGY SCANNER</span>
             <h4 className="text-base font-extrabold text-slate-800 mt-0.5">Upload Leaf Diagnostics</h4>
           </div>
 
@@ -138,7 +138,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                     referrerPolicy="no-referrer"
                   />
                   <div className="min-w-0 flex-1">
-                    <h6 className="font-extrabold text-[10.5px] text-slate-800 group-hover:text-[#0d631b] truncate leading-tight">{s.label}</h6>
+                    <h6 className="font-extrabold text-[10.5px] text-slate-800 group-hover:text-[#16a34a] truncate leading-tight">{s.label}</h6>
                     <p className="text-[9px] text-slate-400 truncate mt-0.5">{s.science}</p>
                   </div>
                 </button>
@@ -173,8 +173,8 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
               </div>
             ) : (
               <div className="space-y-4 py-2">
-                <div className="w-12 h-12 bg-[#f0f9f4] text-[#0d631b] rounded-full flex items-center justify-center mx-auto shadow-2xs">
-                  <Upload className="w-6 h-6 text-[#0d631b]" />
+                <div className="w-12 h-12 bg-[#f0f9f4] text-[#16a34a] rounded-full flex items-center justify-center mx-auto shadow-2xs">
+                  <Upload className="w-6 h-6 text-[#16a34a]" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs font-bold text-slate-700">Drop leaf photo here or click files.</p>
@@ -184,13 +184,13 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                 <div className="flex justify-center gap-2.5">
                   <button 
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 bg-[#0d631b] hover:bg-[#20792e] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition duration-150 cursor-pointer shadow-2xs select-none"
+                    className="px-4 py-2 bg-black hover:bg-[#111827] text-white font-bold text-xs rounded-[6px] flex items-center gap-1.5 transition duration-150 cursor-pointer shadow-2xs select-none"
                   >
                     <Camera className="w-3.5 h-3.5" /> Camera
                   </button>
                   <button 
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-2 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-xl flex items-center gap-1.5 transition duration-150 cursor-pointer select-none"
+                    className="px-4 py-2 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-[6px] flex items-center gap-1.5 transition duration-150 cursor-pointer select-none"
                   >
                     Browse Files
                   </button>
@@ -211,7 +211,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
           
           {loading ? (
             <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
-              <Loader2 className="w-10 h-10 text-[#0d631b] animate-spin mb-4" />
+              <Loader2 className="w-10 h-10 text-[#16a34a] animate-spin mb-4" />
               <span className="text-sm font-bold text-slate-800">Analyzing leaf pathology parameters...</span>
               <p className="text-xs text-slate-400 mt-1.5 max-w-sm leading-relaxed font-semibold">
                 Running computer vision heuristics and ResNet-50 Residual Blocks classification on lesion shapes to generate diagnostic summary...
@@ -243,9 +243,9 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                   <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Match Confidence</span>
-                      <span className="text-xl font-black font-mono text-[#0d631b] block mt-1">{result.confidence}% Match</span>
+                      <span className="text-xl font-black font-mono text-[#16a34a] block mt-1">{result.confidence}% Match</span>
                     </div>
-                    <Award className="w-8 h-8 text-[#0d631b] opacity-60 shrink-0" />
+                    <Award className="w-8 h-8 text-[#16a34a] opacity-60 shrink-0" />
                   </div>
 
                   {/* Severity block */}
@@ -269,7 +269,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                         onClick={() => setActiveTab(tab)}
                         className={`px-4 py-2 text-xs font-black capitalize border-b-2 cursor-pointer transition duration-150 ${
                           activeTab === tab
-                            ? 'border-[#0d631b] text-[#0d631b]'
+                            ? 'border-[#16a34a] text-[#16a34a]'
                             : 'border-transparent text-slate-400 hover:text-slate-600'
                         }`}
                       >
@@ -284,7 +284,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                       {(activeTab === 'symptoms' ? result.symptoms : activeTab === 'treatment' ? result.treatments : result.preventionTips).map((item, idx) => (
                         <li key={idx} className="flex gap-2.5 items-start pl-1">
                           <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${
-                            activeTab === 'symptoms' ? 'text-red-500' : activeTab === 'treatment' ? 'text-[#0d631b]' : 'text-emerald-600'
+                            activeTab === 'symptoms' ? 'text-red-500' : activeTab === 'treatment' ? 'text-[#16a34a]' : 'text-emerald-600'
                           }`} />
                           <span className="text-slate-600 leading-relaxed">{item}</span>
                         </li>
@@ -302,7 +302,7 @@ export default function DiseaseUpload({ token, onPredictionAdded }: DiseaseUploa
                     referrerPolicy="no-referrer"
                   />
                   <div className="min-w-0 flex-1">
-                    <span className="text-[9px] font-mono tracking-widest font-black text-[#0d631b] uppercase block">EXPERT RECOMMENDATION APPROVED</span>
+                    <span className="text-[9px] font-mono tracking-widest font-black text-[#16a34a] uppercase block">EXPERT RECOMMENDATION APPROVED</span>
                     <p className="text-[11px] font-semibold text-slate-600 mt-1 leading-relaxed">
                       Need secondary manual confirmation? Connect instantly with our Senior Pathology Agronomist <strong>Dr. Jane Swaminathan</strong> to run tailored checks.
                     </p>

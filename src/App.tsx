@@ -22,8 +22,7 @@ import SoilForm from './components/SoilForm';
 import DiseaseUpload from './components/DiseaseUpload';
 import ChatBot from './components/ChatBot';
 
-type TabState = 'home' | 'chatbot' | 'crop' | 'disease' | 'about' | 'contact';
-type AboutSubTab = 'intro' | 'literature' | 'existing' | 'proposed' | 'results';
+type TabState = 'home' | 'chatbot' | 'crop' | 'disease' | 'contact';
 
 export default function App() {
   // Silent-authenticated session states
@@ -35,7 +34,6 @@ export default function App() {
 
   // Navigation tab states
   const [activeTab, setActiveTab] = useState<TabState>('home');
-  const [aboutSubTab, setAboutSubTab] = useState<AboutSubTab>('intro');
 
   // Contact form submission states
   const [contactName, setContactName] = useState('');
@@ -118,7 +116,7 @@ export default function App() {
   };
 
   return (
-    <div id="agribot-root-layout" className="min-h-screen bg-[#fbf9f8] flex flex-col justify-between font-sans selection:bg-[#cbffc2] selection:text-[#0d631b]">
+    <div id="agribot-root-layout" className="min-h-screen bg-[#fbf9f8] flex flex-col justify-between font-sans selection:bg-[#cbffc2] selection:text-[#16a34a]">
       
       {/* ---------------------------------------------------------------------
           UNIFIED NAVIGATION HEADER (As shown in screenshots)
@@ -128,14 +126,48 @@ export default function App() {
           
           {/* Logo element on the left with rounded square custom leaf representation */}
           <div className="flex items-center gap-3 cursor-pointer select-none" onClick={() => setActiveTab('home')}>
-            <div className="w-10 h-10 bg-[#0d631b] rounded-xl flex items-center justify-center text-white shadow-xs">
-              <Sprout className="w-6 h-6 text-[#cbffc2]" />
+            <div className="w-12 h-12 bg-white rounded-[6px] flex items-center justify-center p-0.5 border border-slate-100 shadow-2xs">
+              <svg viewBox="0 0 200 200" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Center Leaf */}
+                <path d="M100 40 C75 70 100 110 100 110 C100 110 125 70 100 40 Z" fill="#16a34a" />
+                <line x1="100" y1="40" x2="100" y2="110" stroke="#ffffff" strokeWidth="2.5" />
+                
+                {/* Left Leaf */}
+                <path d="M100 70 C70 80 75 105 100 110 C70 100 65 80 100 70 Z" fill="#16a34a" opacity="0.9" />
+                
+                {/* Right Leaf */}
+                <path d="M100 70 C130 80 125 105 100 110 C130 100 135 80 100 70 Z" fill="#16a34a" opacity="0.9" />
+                
+                {/* Bottom Circuit Branches wrapping around like hands */}
+                {/* Left hand/wire */}
+                <path d="M70 100 C70 120 95 125 100 125" stroke="#16a34a" strokeWidth="4" strokeLinecap="round" fill="none" />
+                <path d="M55 102 C50 110 50 120 70 130 L90 130" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" fill="none" />
+                
+                {/* Right hand/wire */}
+                <path d="M130 100 C130 120 105 125 100 125" stroke="#16a34a" strokeWidth="4" strokeLinecap="round" fill="none" />
+                <path d="M145 102 C150 110 150 120 130 130 L110 130" stroke="#16a34a" strokeWidth="3" strokeLinecap="round" fill="none" />
+                
+                {/* Circuit tracks and nodes */}
+                <line x1="100" y1="125" x2="100" y2="145" stroke="#16a34a" strokeWidth="4.5" strokeLinecap="round" />
+                
+                {/* Left Nodes */}
+                <circle cx="60" cy="85" r="5" fill="#16a34a" />
+                <circle cx="70" cy="85" r="5" fill="#16a34a" />
+                
+                {/* Right Nodes */}
+                <circle cx="130" cy="85" r="5" fill="#16a34a" />
+                <circle cx="140" cy="85" r="5" fill="#16a34a" />
+                
+                {/* Lateral Trace Endpoints */}
+                <circle cx="50" cy="102" r="5" fill="#16a34a" />
+                <circle cx="150" cy="102" r="5" fill="#16a34a" />
+              </svg>
             </div>
             <div>
-              <h1 className="font-sans font-black text-lg tracking-tight leading-none text-[#1b1c1c]">
-                <span className="text-[#0d631b]">AGRI</span>BOT
+              <h1 className="font-sans font-black text-xl tracking-tight leading-none text-[#0a0a0a]">
+                <span className="text-[#16a34a]">AGRI</span>BOT
               </h1>
-              <span className="text-[9px] font-mono tracking-widest text-slate-400 block mt-1 uppercase">Agricultural Intelligence</span>
+              <span className="text-[9px] font-mono tracking-widest text-[#16a34a] block mt-1 uppercase font-bold">Agricultural Intelligence</span>
             </div>
           </div>
 
@@ -146,7 +178,6 @@ export default function App() {
               { id: 'chatbot', label: 'Chatbot' },
               { id: 'crop', label: 'Crop Recommendation' },
               { id: 'disease', label: 'Disease Detection' },
-              { id: 'about', label: 'About' },
               { id: 'contact', label: 'Contact' }
             ].map((tab) => {
               const isActive = activeTab === tab.id;
@@ -154,9 +185,9 @@ export default function App() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as TabState)}
-                  className={`px-4.5 py-1.5 rounded-full transition-all duration-200 uppercase tracking-widest text-[11px] cursor-pointer select-none font-bold ${
+                  className={`px-4 py-1.5 rounded-[6px] transition-all duration-200 uppercase tracking-widest text-[11px] cursor-pointer select-none font-bold ${
                     isActive
-                      ? 'bg-[#cbffc2]/50 text-[#0d631b] font-extrabold shadow-2xs border border-[#cbffc2]/20'
+                      ? 'bg-black text-white font-extrabold shadow-sm border border-black/20'
                       : 'text-slate-600 hover:text-slate-900 border border-transparent'
                   }`}
                 >
@@ -168,7 +199,7 @@ export default function App() {
 
           {/* Staging Authorize capsule indicator in margins */}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-emerald-500/10 text-[#0d631b] text-[10px] font-mono font-bold rounded-lg uppercase tracking-wider">
+            <span className="px-3 py-1 bg-emerald-500/10 text-[#16a34a] text-[10px] font-mono font-bold rounded-lg uppercase tracking-wider">
               🟢 Expert Staging Mode
             </span>
           </div>
@@ -183,14 +214,13 @@ export default function App() {
           { id: 'chatbot', label: 'Chatbot' },
           { id: 'crop', label: 'Crop' },
           { id: 'disease', label: 'Disease Scanner' },
-          { id: 'about', label: 'About Documentation' },
           { id: 'contact', label: 'Contact Us' }
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as TabState)}
-            className={`px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap cursor-pointer transition-all ${
-              activeTab === tab.id ? 'bg-[#0d631b] text-white' : 'bg-slate-50 text-slate-500'
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-[6px] whitespace-nowrap cursor-pointer transition-all ${
+              activeTab === tab.id ? 'bg-black text-white' : 'bg-slate-50 text-slate-500'
             }`}
           >
             {tab.label}
@@ -213,13 +243,13 @@ export default function App() {
                 
                 {/* Left introduction text panel */}
                 <div className="lg:col-span-6 space-y-6">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#cbffc2]/30 text-[#0d631b] border border-[#cbffc2]/80 rounded-full text-[11px] font-black uppercase tracking-wider">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#16a34a]/10 text-[#16a34a] border border-[#16a34a]/25 rounded-full text-[11px] font-black uppercase tracking-wider">
                     <span>🌱 THE FUTURES OF SUSTAINABLE FARMING</span>
                   </div>
 
                   <h2 className="text-4xl md:text-5.5xl font-extrabold tracking-tight text-[#1b1c1c] leading-none">
                     AGRIBOT: <br />
-                    <span className="text-[#0d631b]">Intelligence</span> for the Soil.
+                    <span className="text-[#16a34a]">Intelligence</span> for the Soil.
                   </h2>
 
                   <p className="text-slate-500 text-xs md:text-sm max-w-lg leading-relaxed font-semibold">
@@ -229,13 +259,13 @@ export default function App() {
                   <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <button
                       onClick={() => setActiveTab('crop')}
-                      className="px-6 py-3.5 bg-[#0d631b] hover:bg-[#207920] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm transition duration-150 cursor-pointer"
+                      className="px-6 py-3.5 bg-black hover:bg-[#111827] text-white font-extrabold text-xs rounded-[6px] flex items-center justify-center gap-2 shadow-sm transition duration-150 cursor-pointer"
                     >
                       Analyze Soil Now <ArrowRight className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setActiveTab('chatbot')}
-                      className="px-6 py-3.5 border border-slate-250 hover:bg-slate-100/40 text-slate-700 font-extrabold text-xs rounded-xl transition duration-150 cursor-pointer text-center"
+                      className="px-6 py-3.5 border border-slate-250 hover:bg-slate-100/40 text-slate-700 font-extrabold text-xs rounded-[6px] transition duration-150 cursor-pointer text-center"
                     >
                       Ask AI Advisor
                     </button>
@@ -253,7 +283,7 @@ export default function App() {
                     />
                     {/* Glowing dynamic floating badge */}
                     <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-xs px-3.5 py-2.5 rounded-2xl border border-emerald-500 shadow-md flex items-center gap-2 animate-pulse">
-                      <Clock className="w-5 h-5 text-[#0d631b]" />
+                      <Clock className="w-5 h-5 text-[#16a34a]" />
                       <span className="text-[10.5px] font-sans font-black text-slate-800">
                         Diagnostics Cycle Live: 1.5s Latency
                       </span>
@@ -264,7 +294,7 @@ export default function App() {
               </section>
 
               {/* Green Data Ribbon */}
-              <section className="bg-[#0d631b] text-white rounded-3xl overflow-hidden py-8 shadow-sm">
+              <section className="bg-[#16a34a] text-white rounded-3xl overflow-hidden py-8 shadow-sm">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y lg:divide-y-0 lg:divide-x divide-white/20">
                   <div className="space-y-1 py-1">
                     <span className="block text-xl md:text-3.5xl font-black font-sans text-[#cbffc2]">98.4%</span>
@@ -302,7 +332,7 @@ export default function App() {
                   {/* Bento Crop Recommendation */}
                   <div className="md:col-span-7 bg-white p-7 rounded-3xl border border-slate-200/50 shadow-sm flex flex-col justify-between hover:border-[#cbffc2]/80 transition-all cursor-pointer" onClick={() => setActiveTab('crop')}>
                     <div className="space-y-3">
-                      <div className="w-10 h-10 bg-[#cbffc2]/40 text-[#0d631b] rounded-xl flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#cbffc2]/40 text-[#16a34a] rounded-xl flex items-center justify-center">
                         <Layers className="w-5.5 h-5.5" />
                       </div>
                       <h4 className="font-extrabold font-sans text-base text-slate-800">Crop Soil Recommendation</h4>
@@ -331,13 +361,13 @@ export default function App() {
                         Take pictures of damaged plant canopy leaves: our model scans for bacterial blight, mold spores, rust pustules, and fungal developments immediately.
                       </p>
                     </div>
-                    <span className="text-[#0d631b] font-black text-xs uppercase cursor-pointer select-none tracking-wider flex items-center gap-1 hover:underline mt-6">
+                    <span className="text-[#16a34a] font-black text-xs uppercase cursor-pointer select-none tracking-wider flex items-center gap-1 hover:underline mt-6">
                       RUN LEAF SCAN <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
 
                   {/* Bento AI Advisor Chatbot */}
-                  <div className="md:col-span-4 bg-[#0d631b] text-white p-7 rounded-3xl shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-all cursor-pointer" onClick={() => setActiveTab('chatbot')}>
+                  <div className="md:col-span-4 bg-[#0a0a0a] text-white p-7 rounded-3xl shadow-sm flex flex-col justify-between hover:scale-[1.01] transition-all cursor-pointer" onClick={() => setActiveTab('chatbot')}>
                     <div className="space-y-3">
                       <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-[#cbffc2]">
                         <Sparkles className="w-5.5 h-5.5" />
@@ -405,235 +435,19 @@ export default function App() {
             </div>
           )}
 
-          {/* TAB 5: ABOUT PANEL (Matching Screenshot 1 Documentation layout) */}
-          {activeTab === 'about' && (
-            <div id="about-documentation-view" className="space-y-6 max-w-5xl mx-auto animate-fade-in">
-              
-              {/* Heading */}
-              <div className="space-y-2">
-                <div className="inline-flex px-3 py-1 bg-[#cbffc2]/30 text-[#0d631b] border border-[#cbffc2]/80 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
-                  Project Documentation
-                </div>
-                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
-                  About AGRIBOT
-                </h2>
-                <p className="text-slate-500 text-xs md:text-sm font-semibold leading-relaxed">
-                  A comprehensive AI-powered agricultural assistant leveraging XGBoost and ResNet for intelligent farming solutions
-                </p>
-              </div>
-
-              {/* Interactive buttons row of 5 Document sections as in screenshot */}
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pb-2 border-b border-slate-200">
-                {[
-                  { id: 'intro', label: 'Introduction' },
-                  { id: 'literature', label: 'Literature Survey' },
-                  { id: 'existing', label: 'Existing System' },
-                  { id: 'proposed', label: 'Proposed System' },
-                  { id: 'results', label: 'Results & Conclusion' }
-                ].map((st) => (
-                  <button
-                    key={st.id}
-                    type="button"
-                    onClick={() => setAboutSubTab(st.id as AboutSubTab)}
-                    className={`px-3 py-2.5 text-xs font-bold rounded-xl text-center cursor-pointer transition duration-150 ${
-                      aboutSubTab === st.id
-                        ? 'bg-[#cbffc2]/50 text-[#0d631b] font-extrabold border border-[#cbffc2]/40 shadow-2xs'
-                        : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-50'
-                    }`}
-                  >
-                    {st.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Big High-contrast content block card with color gradient header */}
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden min-h-[400px] flex flex-col justify-between">
-                
-                {/* Active Sub-tab Banner Header */}
-                <div className="bg-[#0d631b] text-white py-4 px-6 flex items-center gap-3">
-                  <BookOpen className="w-5.5 h-5.5 text-[#cbffc2]" />
-                  <h4 className="font-extrabold text-sm uppercase tracking-wider">
-                    {aboutSubTab === 'intro' && 'Project Objectives & Motivation'}
-                    {aboutSubTab === 'literature' && 'Academic References & Algorithm Foundation'}
-                    {aboutSubTab === 'existing' && 'Limitations of Current Traditional Practices'}
-                    {aboutSubTab === 'proposed' && 'Our Unified Intelligent Framework Solution'}
-                    {aboutSubTab === 'results' && 'Empirical Project Validations & Precision Gains'}
-                  </h4>
-                </div>
-
-                {/* Sub-tab content bodies */}
-                <div className="p-6 md:p-8 flex-1">
-                  {aboutSubTab === 'intro' && (
-                    <div className="space-y-6 animate-fade-in font-sans text-slate-600">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-bold text-slate-800">1. Problem Definition</h3>
-                        <p className="text-xs leading-relaxed">
-                          Traditional agriculture relies heavily on generational guesswork, resulting in over-fertilization, poor crop matches for varying soil matrices, and late detection of visual pest blights. These factors degrade soil profiles and reduce annual yield rates by up to 30%.
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <h3 className="text-lg font-bold text-slate-800">2. Core Objectives</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="p-4 bg-[#f0f9f4]/45 border border-emerald-50 rounded-2xl">
-                            <span className="text-[#0d631b] font-mono font-black text-xs block mb-1">OBJECTIVE 01</span>
-                            <strong className="text-slate-800 text-xs block font-bold">Crop Recommendation</strong>
-                            <p className="text-[11px] text-slate-500 leading-relaxed mt-1">Develop automated mathematical classifiers (XGBoost) matching N, P, K soil compositions, humidity, and rainfall to ideal crops.</p>
-                          </div>
-                          <div className="p-4 bg-[#f0f9f4]/45 border border-emerald-50 rounded-2xl">
-                            <span className="text-[#0d631b] font-mono font-black text-xs block mb-1">OBJECTIVE 02</span>
-                            <strong className="text-slate-800 text-xs block font-bold">Foliar Pathology Scan</strong>
-                            <p className="text-[11px] text-slate-500 leading-relaxed mt-1">Implement residual vision networks (ResNet-50) performing instant automatic classification of leaf lesions and molds.</p>
-                          </div>
-                          <div className="p-4 bg-[#f0f9f4]/45 border border-emerald-50 rounded-2xl">
-                            <span className="text-[#0d631b] font-mono font-black text-xs block mb-1">OBJECTIVE 03</span>
-                            <strong className="text-slate-800 text-xs block font-bold">Agronomist Expert AI</strong>
-                            <p className="text-[11px] text-slate-500 leading-relaxed mt-1">Utilize state-of-the-art server-side LLM context translation providing customized treatment plans in 4 local Indian languages.</p>
-                          </div>
-                          <div className="p-4 bg-[#f0f9f4]/45 border border-emerald-50 rounded-2xl">
-                            <span className="text-[#0d631b] font-mono font-black text-xs block mb-1">OBJECTIVE 04</span>
-                            <strong className="text-slate-800 text-xs block font-bold">Digital Stewardship Reports</strong>
-                            <p className="text-[11px] text-slate-500 leading-relaxed mt-1">Bridge physical resource limitations with active mobile metrics, compiling detailed digital feedback lists instantly.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {aboutSubTab === 'literature' && (
-                    <div className="space-y-6 animate-fade-in font-sans text-slate-600">
-                      <p className="text-xs leading-relaxed">
-                        Precision farming is driven by advanced predictive diagnostics. We analyzed several academic benchmarks to ground our algorithm pipeline:
-                      </p>
-
-                      <div className="space-y-4">
-                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                          <strong className="text-slate-800 text-xs font-bold block">1. Soil Chemistry Classification (RF vs. XGBoost)</strong>
-                          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-                            <em>Kumar et al. (2021)</em> assessed Random Forests against extreme gradient boosting. Their work verified that tree-based gradient boosting models perform significantly better on tabular mineral matrices, registering tighter decision limits under high precipitation deviations.
-                          </p>
-                        </div>
-                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                          <strong className="text-slate-800 text-xs font-bold block">2. Deep Foliar Vision Foundations (ResNet-50 Residual Networks)</strong>
-                          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-                            <em>Singh et al. (2023)</em> compared VGG16, MobileNet, and ResNet-50 convolutional architectures. Due to identity mapping residual shortcut blocks, ResNet-50 achieves higher stability classifying minute leaf lesion molds (like early versus late blight spot patterns) without experiencing vanishing gradient distortions over large multi-class arrays.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {aboutSubTab === 'existing' && (
-                    <div className="space-y-6 animate-fade-in font-sans text-slate-600">
-                      <p className="text-xs leading-relaxed">
-                        Existing soil testing and foliar analysis frameworks are plagued by physical barriers that slow down response cycles:
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="p-4 bg-rose-50/20 border border-red-50 rounded-2xl">
-                          <strong className="text-slate-800 text-xs font-bold block">Physical Testing Delays</strong>
-                          <p className="text-[11.5px] mt-1 text-slate-505">Farmers must ship soil samples or leaf cuttings to far-off state research extension laboratories, incurring 7 to 14 days of turnaround latency. In that window, blights escalate, causing total crop devastation.</p>
-                        </div>
-                        <div className="p-4 bg-rose-50/20 border border-red-50 rounded-2xl">
-                          <strong className="text-slate-800 text-xs font-bold block">High Diagnostics Cost</strong>
-                          <p className="text-[11.5px] mt-1 text-slate-505">Standard laboratory assays cost between $50 and $150 per soil cycle. For developing-world cultivators and smallholder farmers, this represents an unfeasible operational capital barrier.</p>
-                        </div>
-                        <div className="p-4 bg-rose-50/20 border border-red-50 rounded-2xl">
-                          <strong className="text-slate-800 text-xs font-bold block">Foliar Guesswork</strong>
-                          <p className="text-[11.5px] mt-1 text-slate-505">Without expert agronomist visits, farmers struggle to visually separate potato look-alikes like nutrient yellowing versus lethal early blight. Incorrect pesticide usage ruins beneficial biomes.</p>
-                        </div>
-                        <div className="p-4 bg-rose-50/20 border border-red-50 rounded-2xl">
-                          <strong className="text-slate-800 text-xs font-bold block">Extreme Expertise Deficit</strong>
-                          <p className="text-[11.5px] mt-1 text-slate-505">The density of professional agronomists in rural sectors remains below 1 agent per 5,500 active farms. Smallholders operate completely isolated from scientific guidance.</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {aboutSubTab === 'proposed' && (
-                    <div className="space-y-6 animate-fade-in font-sans text-slate-600">
-                      <p className="text-xs leading-relaxed">
-                        AGRIBOT replaces delay-heavy physical procedures with an instant digital platform powered by machine learning and high-level image diagnostics:
-                      </p>
-
-                      <div className="p-5 border border-emerald-50 bg-[#f0f9f4]/30 rounded-2xl space-y-4">
-                        <h4 className="text-slate-800 font-extrabold text-xs uppercase tracking-wide">System Architecture Block Flow</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                          <div className="p-3 bg-white border border-slate-200/60 rounded-xl space-y-1">
-                            <span className="block text-[#0d631b] font-black text-xs font-mono">STEP 01</span>
-                            <span className="text-xs text-slate-800 font-bold block">INPUT LAYER</span>
-                            <p className="text-[10px] text-slate-400 mt-1 leading-normal">Soil parameters range values & foliage leave imagery upload.</p>
-                          </div>
-                          <div className="p-3 bg-white border border-slate-205/60 rounded-xl space-y-1">
-                            <span className="block text-[#0d631b] font-black text-xs font-mono">STEP 02</span>
-                            <span className="text-xs text-slate-800 font-bold block">AI ANALYSIS LAYER</span>
-                            <p className="text-[10px] text-slate-400 mt-1 leading-normal">XGBoost & ResNet models process parameters on our neural cluster.</p>
-                          </div>
-                          <div className="p-3 bg-white border border-slate-200/60 rounded-xl space-y-1">
-                            <span className="block text-[#0d631b] font-black text-xs font-mono">STEP 03</span>
-                            <span className="text-xs text-slate-800 font-bold block">FEEDBACK OUTPUT</span>
-                            <p className="text-[10px] text-slate-400 mt-1 leading-normal">Interactive recommendations list & digital agronomist guidelines.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {aboutSubTab === 'results' && (
-                    <div className="space-y-6 animate-fade-in font-sans text-slate-600">
-                      <p className="text-xs leading-relaxed">
-                        During system validations, our ML modules demonstrated incredible accuracy metrics across standard agronomist testing databases:
-                      </p>
-
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                          <span className="block text-2xl font-black text-[#0d631b] font-sans">98.4%</span>
-                          <span className="text-[9.5px] font-mono tracking-wider text-slate-400 uppercase font-bold mt-1 block">XGBoost Crop Accuracy</span>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                          <span className="block text-2xl font-black text-[#0d631b] font-sans">95.2%</span>
-                          <span className="text-[9.5px] font-mono tracking-wider text-slate-400 uppercase font-bold mt-1 block">ResNet-50 Disease Scan</span>
-                        </div>
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                          <span className="block text-2xl font-black text-[#0d631b] font-sans">-85%</span>
-                          <span className="text-[9.5px] font-mono tracking-wider text-slate-400 uppercase font-bold mt-1 block">Testing Turnaround</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2 pt-2">
-                        <h4 className="text-slate-800 font-bold text-xs">Project Impact Summary</h4>
-                        <p className="text-xs leading-relaxed">
-                          By transforming testing pipelines, smallholder farmers reduce localized pesticide over-spraying expenditures by <strong>40%</strong>, and experience average harvest weight gains of up to <strong>35%</strong> within their very first season of precision crop matching.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Card footer block */}
-                <div className="bg-slate-50 py-3.5 px-6 border-t border-slate-150 flex justify-between items-center text-[10px] font-mono tracking-wider text-slate-400 uppercase font-bold shrink-0 select-none">
-                  <span>AGRIBOT Precise Systems</span>
-                  <span>Validated Academic Study &bull; June 2026</span>
-                </div>
-
-              </div>
-
-            </div>
-          )}
-
           {/* TAB 6: CONTACT PANEL (Matching Image 6 layout) */}
           {activeTab === 'contact' && (
             <div id="contact-view-outlet" className="space-y-12 animate-fade-in">
               
               {/* Heading */}
               <div className="text-center space-y-2">
-                <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
+                <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#16a34a] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
                   Get in Touch
                 </div>
                 <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
                   Contact Us
                 </h2>
-                <p className="text-slate-500 text-xs md:text-sm font-semibold max-w-lg mx-auto">
+                <p className="text-slate-550 text-xs md:text-sm font-semibold max-w-lg mx-auto">
                   Have questions about AGRIBOT? Our team is here to help you optimize your farm's productivity.
                 </p>
               </div>
@@ -646,31 +460,31 @@ export default function App() {
                   
                   {/* Email panel */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-205/60 shadow-sm flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#0d631b] shrink-0">
+                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#16a34a] shrink-0">
                       <Mail className="w-5.5 h-5.5" />
                     </div>
                     <div className="min-w-0">
                       <h4 className="font-extrabold text-sm text-slate-850">Email Us</h4>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">agribot@gmail.com</p>
-                      <a href="mailto:agribot@gmail.com" className="text-[10px] uppercase font-bold text-[#0d631b] hover:underline mt-2 inline-block">Send Email &rarr;</a>
+                      <a href="mailto:agribot@gmail.com" className="text-[10px] uppercase font-bold text-[#16a34a] hover:underline mt-2 inline-block">Send Email &rarr;</a>
                     </div>
                   </div>
 
                   {/* Phone panel */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-205/60 shadow-sm flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#0d631b] shrink-0">
+                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#16a34a] shrink-0">
                       <Phone className="w-5.5 h-5.5" />
                     </div>
                     <div className="min-w-0">
                       <h4 className="font-extrabold text-sm text-slate-850">Call Us</h4>
                       <p className="text-xs text-slate-500 mt-0.5 font-medium">+1 555-0199</p>
-                      <a href="tel:+15550199" className="text-[10px] uppercase font-bold text-[#0d631b] hover:underline mt-2 inline-block">Dial Now &rarr;</a>
+                      <a href="tel:+15550199" className="text-[10px] uppercase font-bold text-[#16a34a] hover:underline mt-2 inline-block">Dial Now &rarr;</a>
                     </div>
                   </div>
 
                   {/* Visit panel */}
                   <div className="bg-white p-5 rounded-2xl border border-slate-205/60 shadow-sm flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#0d631b] shrink-0">
+                    <div className="w-10 h-10 bg-[#cbffc2]/40 rounded-xl flex items-center justify-center text-[#16a34a] shrink-0">
                       <MapPin className="w-5.5 h-5.5" />
                     </div>
                     <div className="min-w-0">
@@ -680,9 +494,9 @@ export default function App() {
                   </div>
 
                   {/* Quick responses green box */}
-                  <div className="p-4 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-2xl">
+                  <div className="p-4 bg-emerald-50 text-[#16a34a] border border-emerald-100 rounded-2xl">
                     <strong className="text-xs block font-bold">Quick Response Guarantee</strong>
-                    <p className="text-slate-600 text-[11px] leading-relaxed mt-1 font-medium">
+                    <p className="text-slate-650 text-[11px] leading-relaxed mt-1 font-medium">
                       We typically respond to emails within 2 hours during active business hours (IST). Your precision agriculture support is our priority.
                     </p>
                   </div>
@@ -693,8 +507,8 @@ export default function App() {
                 <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
                   
                   {/* Header */}
-                  <div className="bg-[#0d631b] text-white py-4 px-6 flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-[#cbffc2]" />
+                  <div className="bg-[#0a0a0a] text-white py-4 px-6 flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-[#16a34a]" />
                     <h4 className="font-bold text-sm tracking-wide">Send us a Message</h4>
                   </div>
 
@@ -709,7 +523,7 @@ export default function App() {
                           value={contactName}
                           onChange={(e) => setContactName(e.target.value)}
                           placeholder="e.g. Ramesh"
-                          className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#0d631b]"
+                          className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#16a34a]"
                         />
                       </div>
                       <div>
@@ -720,7 +534,7 @@ export default function App() {
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
                           placeholder="email@example.com"
-                          className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#0d631b]"
+                          className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#16a34a]"
                         />
                       </div>
                     </div>
@@ -733,7 +547,7 @@ export default function App() {
                         value={contactSubject}
                         onChange={(e) => setContactSubject(e.target.value)}
                         placeholder="How can we help?"
-                        className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#0d631b]"
+                        className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#16a34a]"
                       />
                     </div>
 
@@ -745,12 +559,12 @@ export default function App() {
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
                         placeholder="Describe your soil, crops, or general inquiries in detail..."
-                        className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#0d631b]"
+                        className="w-full text-xs p-3 bg-slate-50/50 border border-slate-200 rounded-xl text-slate-800 focus:outline-[#16a34a]"
                       />
                     </div>
 
                     {contactSent && (
-                      <div className="p-3 bg-emerald-50 text-[#0d631b] text-xs font-bold rounded-xl border border-emerald-100 text-center animate-fade-in">
+                      <div className="p-3 bg-emerald-50 text-[#16a34a] text-xs font-bold rounded-[6px] border border-emerald-100 text-center animate-fade-in">
                         Thank you! Your message has been routed to our Agronomist dispatch team.
                       </div>
                     )}
@@ -758,7 +572,7 @@ export default function App() {
                     <button
                       type="submit"
                       disabled={contactSent}
-                      className="w-full py-3 bg-[#0d631b] hover:bg-[#207920] disabled:bg-[#f0f9f4] text-white disabled:text-[#0d631b] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition duration-150 cursor-pointer shadow-2xs select-none"
+                      className="w-full py-3 bg-black hover:bg-[#111827] disabled:bg-slate-100 text-white disabled:text-slate-400 font-bold text-xs rounded-[6px] flex items-center justify-center gap-1.5 transition duration-150 cursor-pointer shadow-2xs select-none"
                     >
                       <Send className="w-3.5 h-3.5" />
                       Send Message
@@ -786,13 +600,13 @@ export default function App() {
                     <div key={index} className="pt-4 first:pt-0">
                       <button
                         onClick={() => setFaqOpen(faqOpen === index ? null : index)}
-                        className="w-full flex justify-between items-center text-left py-2 font-extrabold font-sans text-slate-800 text-xs sm:text-sm cursor-pointer hover:text-[#0d631b] transition duration-150 select-none"
+                        className="w-full flex justify-between items-center text-left py-2 font-extrabold font-sans text-slate-800 text-xs sm:text-sm cursor-pointer hover:text-[#16a34a] transition duration-150 select-none"
                       >
                         <span>{faq.q}</span>
-                        <ChevronDown className={`w-4.5 h-4.5 text-slate-400 transition-transform ${faqOpen === index ? 'rotate-180 text-[#0d631b]' : ''}`} />
+                        <ChevronDown className={`w-4.5 h-4.5 text-slate-400 transition-transform ${faqOpen === index ? 'rotate-180 text-[#16a34a]' : ''}`} />
                       </button>
                       {faqOpen === index && (
-                        <p className="text-xs text-slate-500 leading-relaxed font-semibold mt-2 pl-1 animate-fade-in border-l-2 border-[#0d631b]/40 pr-2">
+                        <p className="text-xs text-slate-500 leading-relaxed font-semibold mt-2 pl-1 animate-fade-in border-l-2 border-[#16a34a]/40 pr-2">
                           {faq.a}
                         </p>
                       )}
@@ -816,8 +630,13 @@ export default function App() {
           {/* Column 1: Custom logo leaf branding */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-[#0d631b] rounded-lg flex items-center justify-center text-white border border-emerald-700/50">
-                <Sprout className="w-4.5 h-4.5 text-[#cbffc2]" />
+              <div className="w-8 h-8 bg-white rounded-[6px] flex items-center justify-center p-0.5 border border-slate-805">
+                <svg viewBox="0 0 200 200" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 40 C75 70 100 110 100 110 C100 110 125 70 100 40 Z" fill="#16a34a" />
+                  <line x1="100" y1="40" x2="100" y2="110" stroke="#ffffff" strokeWidth="2.5" />
+                  <path d="M100 70 C70 80 75 105 100 110 C70 100 65 80 100 70 Z" fill="#16a34a" opacity="0.9" />
+                  <path d="M100 70 C130 80 125 105 100 110 C130 100 135 80 100 70 Z" fill="#16a34a" opacity="0.9" />
+                </svg>
               </div>
               <span className="font-sans font-black text-sm tracking-tight text-[#fbf9f8] uppercase block">AGRIBOT</span>
             </div>
@@ -828,32 +647,31 @@ export default function App() {
 
           {/* Column 2: Quick Links */}
           <div className="md:col-span-2 space-y-3">
-            <h5 className="font-bold text-xs uppercase text-[#cbffc2] tracking-wider">Quick Links</h5>
+            <h5 className="font-bold text-xs uppercase text-[#16a34a] tracking-wider font-mono">Quick Links</h5>
             <ul className="text-xs text-slate-400 space-y-2 font-medium">
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('home')}>Home</li>
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('chatbot')}>Chatbot Advisor</li>
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('crop')}>Crop Recommendation</li>
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('disease')}>Disease Detection</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('home')}>Home</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('chatbot')}>Chatbot Advisor</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('crop')}>Crop Recommendation</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('disease')}>Disease Detection</li>
             </ul>
           </div>
 
           {/* Column 3: Resources */}
           <div className="md:col-span-2 space-y-3">
-            <h5 className="font-bold text-xs uppercase text-[#cbffc2] tracking-wider">Resources</h5>
+            <h5 className="font-bold text-xs uppercase text-[#16a34a] tracking-wider font-mono">Resources</h5>
             <ul className="text-xs text-slate-400 space-y-2 font-medium">
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('about')}>Documentation</li>
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('about')}>Research Papers</li>
-              <li className="hover:text-[#cbffc2] transition cursor-pointer" onClick={() => setActiveTab('contact')}>Active Support</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('contact')}>Support FAQ</li>
+              <li className="hover:text-[#16a34a] transition cursor-pointer" onClick={() => setActiveTab('contact')}>Active Support</li>
             </ul>
           </div>
 
           {/* Column 4: Technology notation */}
           <div className="md:col-span-3 space-y-3">
-            <h5 className="font-bold text-xs uppercase text-[#cbffc2] tracking-wider">Core Algorithms</h5>
+            <h5 className="font-bold text-xs uppercase text-[#16a34a] tracking-wider font-mono">Core Algorithms</h5>
             <p className="text-[11px] text-slate-400 leading-relaxed font-semibold">
               Powering stewardship decisions via extreme gradient boosting (XGBoost), ResNet-50 CNN structures, and server-side Gemini Flash API endpoints.
             </p>
-            <span className="text-[9px] font-mono uppercase font-black text-[#cbffc2] tracking-widest block bg-white/5 py-1 px-2.5 rounded border border-white/10 w-fit select-none">
+            <span className="text-[9px] font-mono uppercase font-black text-[#16a34a] tracking-widest block bg-white/5 py-1 px-2.5 rounded border border-white/10 w-fit select-none">
               PRODUCTION COEXISTENCE
             </span>
           </div>

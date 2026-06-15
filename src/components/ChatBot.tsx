@@ -153,7 +153,7 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
       <div id="chatbot-interface-card" className="bg-white rounded-3xl border border-slate-200/80 shadow-md overflow-hidden flex flex-col h-[580px]">
         
         {/* Solid Green Header matching screenshots */}
-        <div className="bg-[#0d631b] text-white py-4 px-6 flex justify-between items-center select-none shadow-sm shrink-0">
+        <div className="bg-[#0a0a0a] text-white py-4 px-6 flex justify-between items-center select-none shadow-sm shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20">
               <Sprout className="w-5.5 h-5.5 text-[#cbffc2]" />
@@ -188,7 +188,7 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
               >
                 {/* Bot Avatar on the left */}
                 {!isUser && (
-                  <div className="w-8 h-8 rounded-full bg-[#0d631b] flex items-center justify-center shrink-0 border border-emerald-700/10 shadow-xs">
+                  <div className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center shrink-0 border border-emerald-700/10 shadow-xs">
                     <Sprout className="w-4 h-4 text-[#cbffc2]" />
                   </div>
                 )}
@@ -198,7 +198,7 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
                   <div
                     className={`p-3.5 rounded-2xl shadow-sm text-xs leading-relaxed ${
                       isUser
-                        ? 'bg-[#0d631b] text-white rounded-br-none'
+                        ? 'bg-[#16a34a] text-white rounded-br-none'
                         : 'bg-white text-slate-800 rounded-bl-none border border-slate-100'
                     }`}
                   >
@@ -216,7 +216,7 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
 
           {loading && (
             <div className="flex justify-start gap-3 items-start animate-pulse">
-              <div className="w-8 h-8 rounded-full bg-[#0d631b] flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center shrink-0">
                 <Loader2 className="w-4 h-4 text-[#cbffc2] animate-spin" />
               </div>
               <div className="bg-white p-3.5 rounded-2xl rounded-bl-none border border-slate-100 shadow-sm text-xs text-slate-500 font-semibold">
@@ -236,7 +236,7 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
                 key={idx}
                 type="button"
                 onClick={() => handleSendQuery(q)}
-                className="px-3.5 py-2 bg-[#f0f9f4] hover:bg-[#e1f5e8] border border-emerald-100 rounded-full text-xs font-semibold text-[#0d631b] transition duration-150 cursor-pointer text-left shadow-2xs hover:shadow-1xs"
+                className="px-3.5 py-2 bg-[#f0f9f4] hover:bg-[#e1f5e8] border border-emerald-100 rounded-full text-xs font-semibold text-[#16a34a] transition duration-150 cursor-pointer text-left shadow-2xs hover:shadow-1xs"
               >
                 {q}
               </button>
@@ -252,12 +252,12 @@ export default function ChatBot({ token, initialHistory }: ChatBotProps) {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your farming question..."
             disabled={loading}
-            className="flex-1 font-medium bg-[#f0f9f4]/45 text-xs p-3.5 rounded-2xl border border-slate-200/70 text-slate-800 placeholder-slate-400 focus:border-[#0d631b] focus:bg-white focus:outline-none transition-all duration-200"
+            className="flex-1 font-medium bg-[#f0f9f4]/45 text-xs p-3.5 rounded-2xl border border-slate-200/70 text-slate-800 placeholder-slate-400 focus:border-[#16a34a] focus:bg-white focus:outline-none transition-all duration-200"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="w-12 h-12 bg-[#0d631b] hover:bg-[#227e31] disabled:bg-slate-100 text-white disabled:text-slate-350 rounded-2xl flex items-center justify-center shrink-0 transition-colors duration-150 cursor-pointer shadow-sm"
+            className="w-12 h-12 bg-black hover:bg-[#111827] disabled:bg-slate-100 text-white disabled:text-slate-350 rounded-[6px] flex items-center justify-center shrink-0 transition-colors duration-150 cursor-pointer shadow-sm"
           >
             <Send className="w-5 h-5" />
           </button>

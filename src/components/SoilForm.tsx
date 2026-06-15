@@ -134,7 +134,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
       
       {/* Upper Badge & Titles matching screenshot 5 */}
       <div className="text-center space-y-2">
-        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#0d631b] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
+        <div className="inline-flex px-3 py-1 bg-emerald-50 text-[#16a34a] border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest font-mono">
           XGBoost Powered
         </div>
         <h2 className="text-2xl md:text-3xl font-extrabold text-[#1b1c1c] tracking-tight">
@@ -152,7 +152,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
         <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200/80 shadow-md overflow-hidden">
           
           {/* Header Banner */}
-          <div className="bg-[#0d631b] text-white py-4 px-6 flex items-center gap-3">
+          <div className="bg-[#0a0a0a] text-white py-4 px-6 flex items-center gap-3">
             <Layers className="w-5 h-5 text-[#cbffc2]" />
             <h4 className="font-bold text-sm tracking-wide">Soil & Environmental Parameters</h4>
           </div>
@@ -192,7 +192,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     max="150"
                     value={formData.nitrogen}
                     onChange={(e) => handleValueChange('nitrogen', Number(e.target.value))}
-                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#16a34a]"
                   />
                 </div>
                 <input
@@ -201,7 +201,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                   max="150"
                   value={formData.nitrogen}
                   onChange={(e) => handleValueChange('nitrogen', Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                 />
               </div>
 
@@ -218,7 +218,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     max="150"
                     value={formData.phosphorus}
                     onChange={(e) => handleValueChange('phosphorus', Number(e.target.value))}
-                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#16a34a]"
                   />
                 </div>
                 <input
@@ -227,7 +227,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                   max="150"
                   value={formData.phosphorus}
                   onChange={(e) => handleValueChange('phosphorus', Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                 />
               </div>
 
@@ -244,7 +244,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     max="150"
                     value={formData.potassium}
                     onChange={(e) => handleValueChange('potassium', Number(e.target.value))}
-                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#0d631b]"
+                    className="w-16 p-1 bg-slate-50 border border-slate-200 rounded text-center text-xs font-mono font-bold text-[#16a34a]"
                   />
                 </div>
                 <input
@@ -253,7 +253,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                   max="150"
                   value={formData.potassium}
                   onChange={(e) => handleValueChange('potassium', Number(e.target.value))}
-                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                  className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-slate-500 flex justify-between">
                     <span>Temperature (°C)</span>
-                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.temperature}°C</span>
+                    <span className="font-mono text-xs font-bold text-[#16a34a]">{formData.temperature}°C</span>
                   </label>
                   <input
                     type="range"
@@ -272,14 +272,14 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     step="0.5"
                     value={formData.temperature}
                     onChange={(e) => handleValueChange('temperature', Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                   />
                 </div>
                 {/* Humidity */}
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-slate-500 flex justify-between">
                     <span>Humidity (%)</span>
-                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.humidity}%</span>
+                    <span className="font-mono text-xs font-bold text-[#16a34a]">{formData.humidity}%</span>
                   </label>
                   <input
                     type="range"
@@ -287,7 +287,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     max="100"
                     value={formData.humidity}
                     onChange={(e) => handleValueChange('humidity', Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                   />
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-slate-500 flex justify-between">
                     <span>Soil pH</span>
-                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.ph}</span>
+                    <span className="font-mono text-xs font-bold text-[#16a34a]">{formData.ph}</span>
                   </label>
                   <input
                     type="range"
@@ -306,14 +306,14 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     step="0.1"
                     value={formData.ph}
                     onChange={(e) => handleValueChange('ph', Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                   />
                 </div>
                 {/* Rainfall */}
                 <div className="space-y-1">
                   <label className="text-[11px] font-bold text-slate-500 flex justify-between">
                     <span>Rainfall (mm)</span>
-                    <span className="font-mono text-xs font-bold text-[#0d631b]">{formData.rainfall}mm</span>
+                    <span className="font-mono text-xs font-bold text-[#16a34a]">{formData.rainfall}mm</span>
                   </label>
                   <input
                     type="range"
@@ -321,7 +321,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                     max="300"
                     value={formData.rainfall}
                     onChange={(e) => handleValueChange('rainfall', Number(e.target.value))}
-                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0d631b]"
+                    className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#16a34a]"
                   />
                 </div>
               </div>
@@ -340,7 +340,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-3 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-xl transition duration-150 cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-3 border border-slate-200 text-slate-500 hover:bg-slate-50 font-bold text-xs rounded-[6px] transition duration-150 cursor-pointer flex items-center gap-1.5"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Reset
@@ -349,7 +349,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 py-3 bg-[#0d631b] hover:bg-[#227e31] disabled:bg-slate-150 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition duration-150 cursor-pointer shadow-xs select-none"
+                className="flex-1 py-3 bg-[#000000] hover:bg-[#111827] disabled:bg-slate-150 text-white font-bold text-xs rounded-[6px] flex items-center justify-center gap-2 transition duration-150 cursor-pointer shadow-xs select-none"
               >
                 {loading ? (
                   <>
@@ -381,7 +381,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                   <h4 className="font-bold text-slate-800 text-sm font-sans">AI Recommendations</h4>
                   <p className="text-[10px] font-semibold text-slate-400 mt-0.5">Top predicted matches for your soil profile.</p>
                 </div>
-                <div className="px-3.5 py-1.5 bg-[#0d631b]/10 text-[#0d631b] border border-[#0d631b]/20 text-[10px] font-black font-mono rounded-full uppercase tracking-wider uppercase flex items-center gap-1">
+                <div className="px-3.5 py-1.5 bg-[#16a34a]/10 text-[#16a34a] border border-[#16a34a]/20 text-[10px] font-black font-mono rounded-full uppercase tracking-wider uppercase flex items-center gap-1">
                   <Award className="w-3.5 h-3.5" /> Accuracy: 98.4%
                 </div>
               </div>
@@ -406,8 +406,8 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                   <div className="sm:col-span-7 flex flex-col justify-between py-0.5 space-y-2">
                     <div>
                       <div className="flex justify-between items-center select-none">
-                        <span className="text-[9px] font-mono tracking-widest font-black text-[#0d631b] uppercase bg-[#cbffc2]/55 px-2 py-0.5 rounded-full">Best Match</span>
-                        <span className="text-base font-black font-mono text-[#0d631b]">{result.recommendedCrops[0]?.suitabilityScore}%</span>
+                        <span className="text-[9px] font-mono tracking-widest font-black text-[#16a34a] uppercase bg-[#cbffc2]/55 px-2 py-0.5 rounded-full">Best Match</span>
+                        <span className="text-base font-black font-mono text-[#16a34a]">{result.recommendedCrops[0]?.suitabilityScore}%</span>
                       </div>
                       
                       <h3 className="text-lg font-extrabold text-slate-800 mt-1 leading-tight">{result.recommendedCrops[0]?.name}</h3>
@@ -427,7 +427,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
                 {/* Sub recommendations Bullet list with professional agronomy values */}
                 <div className="space-y-3.5">
                   <h5 className="font-extrabold text-xs text-slate-700 uppercase tracking-wider flex items-center gap-1.5 select-none pl-1">
-                    <Leaf className="w-4 h-4 text-[#0d631b]" /> Cultivation Guidelines:
+                    <Leaf className="w-4 h-4 text-[#16a34a]" /> Cultivation Guidelines:
                   </h5>
                   <div className="p-4 bg-[#f0f9f4]/45 rounded-2xl border border-emerald-50/50 text-xs text-slate-650 leading-relaxed font-medium space-y-2 prose">
                     <div className="whitespace-pre-line text-slate-600">
@@ -462,7 +462,7 @@ export default function SoilForm({ token, onRecommendationAdded }: SoilFormProps
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center p-6 border-4 border-dashed border-slate-50 rounded-3xl m-3">
-              <div className="w-16 h-16 bg-[#f0f9f4] text-[#0d631b] rounded-full flex items-center justify-center mx-auto shadow-sm relative">
+              <div className="w-16 h-16 bg-[#f0f9f4] text-[#16a34a] rounded-full flex items-center justify-center mx-auto shadow-sm relative">
                 <Sprout className="w-8 h-8" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full animate-ping border-2 border-white" />
               </div>
