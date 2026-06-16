@@ -21,6 +21,8 @@ import { User, CropRecommendation, DiseasePrediction, ChatMessage } from './type
 import SoilForm from './components/SoilForm';
 import DiseaseUpload from './components/DiseaseUpload';
 import ChatBot from './components/ChatBot';
+// @ts-ignore
+import heroImage from './assets/images/regenerated_image_1781532276679.png';
 
 type TabState = 'home' | 'chatbot' | 'crop' | 'disease' | 'contact';
 
@@ -276,7 +278,7 @@ export default function App() {
                 <div className="lg:col-span-6 relative flex justify-center">
                   <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-slate-200 shadow-xl bg-white">
                     <img
-                      src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80"
+                      src={heroImage}
                       alt="Agribot Tablet Mockup Field"
                       className="w-full h-80 object-cover opacity-95"
                       referrerPolicy="no-referrer"
